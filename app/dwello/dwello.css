@@ -66,6 +66,36 @@ html:has(.airtrace-page) {
   border-radius: 4px;
 }
 
+/* ── cursor ────────────────────────────────────────────────────────────────
+   globals.css hides the pointer site-wide (`body, a, button { cursor: none }`
+   under `@media (pointer: fine)`) because the portfolio pages draw their own
+   with <CustomCursor />. This page deliberately doesn't use that cursor, so
+   without these rules there is no pointer at all here on any mouse device.
+   `.airtrace-page a` beats the bare `a` selector on specificity, which is what
+   makes these win. */
+/* `body` is styled by globals.css directly, so it needs its own override —
+   it shows through on overscroll and owns the layout's skip link. */
+body:has(.airtrace-page) { cursor: auto; }
+body:has(.airtrace-page) > a { cursor: pointer; }
+
+.airtrace-page { cursor: auto; }
+
+.airtrace-page a,
+.airtrace-page button,
+.airtrace-page select,
+.airtrace-page summary,
+.airtrace-page label.access-check {
+  cursor: pointer;
+}
+
+.airtrace-page input[type="text"],
+.airtrace-page input[type="email"] {
+  cursor: text;
+}
+
+.airtrace-page input[type="checkbox"] { cursor: pointer; }
+
+
 /* ----------------------------------------------------------------- nav */
 .at-nav {
   position: sticky;
