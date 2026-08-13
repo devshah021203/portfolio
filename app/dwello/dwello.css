@@ -1,0 +1,977 @@
+/* ==========================================================================
+   Dwello — page-scoped dark theme.
+   Everything here is namespaced under .airtrace-page so the light portfolio
+   theme is untouched.
+   ========================================================================== */
+
+html:has(.airtrace-page) {
+  background: #06070a;
+}
+
+.airtrace-page {
+  --at-bg: #06070a;
+  --at-bg-soft: #0b0e14;
+  --at-panel: rgba(146, 200, 235, 0.045);
+  --at-panel-strong: rgba(146, 200, 235, 0.075);
+  --at-line: rgba(132, 192, 228, 0.16);
+  --at-line-strong: rgba(132, 192, 228, 0.34);
+  --at-text: #e9eef5;
+  --at-muted: #93a0b3;
+  /* Low-emphasis text. Solid rather than an alpha of --at-muted: the alpha
+     versions measured 3.7-4.3:1 against the panel grounds, under AA's 4.5. */
+  --at-meta: #9fadc0;
+  --at-cyan: #3ee9ff;
+  --at-cyan-deep: #0f2d38;
+  --at-violet: #a78bfa;
+  --at-radius: 14px;
+
+  position: relative;
+  min-height: 100dvh;
+  background: var(--at-bg);
+  color: var(--at-text);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Ambient field behind everything: two slow aurora blooms + a fine grid. */
+.airtrace-page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(58rem 38rem at 78% -8%, rgba(62, 233, 255, 0.16), transparent 62%),
+    radial-gradient(46rem 34rem at 8% 32%, rgba(120, 96, 255, 0.13), transparent 60%),
+    radial-gradient(40rem 30rem at 52% 108%, rgba(62, 233, 255, 0.08), transparent 62%),
+    linear-gradient(rgba(132, 192, 228, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(132, 192, 228, 0.035) 1px, transparent 1px),
+    var(--at-bg);
+  background-size: auto, auto, auto, 44px 44px, 44px 44px, auto;
+}
+
+.airtrace-page > * {
+  position: relative;
+  z-index: 1;
+}
+
+.airtrace-page ::selection {
+  background: var(--at-cyan);
+  color: #04121a;
+}
+
+.airtrace-page :focus-visible {
+  outline: 3px solid var(--at-cyan);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ----------------------------------------------------------------- nav */
+.at-nav {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1rem clamp(1.15rem, 4vw, 3.5rem);
+  background: rgba(6, 7, 10, 0.72);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--at-line);
+}
+
+.at-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  line-height: 1;
+}
+
+.at-brand-mark {
+  font-size: 1.12rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.at-brand-sub {
+  color: var(--at-muted);
+  font-size: 0.6rem;
+}
+
+.at-nav-cta {
+  padding: 0.6rem 1.1rem;
+  border: 1px solid var(--at-line-strong);
+  border-radius: 999px;
+  color: var(--at-text);
+  font-size: 0.8rem;
+  font-weight: 550;
+  white-space: nowrap;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.at-nav-cta:hover {
+  background: rgba(62, 233, 255, 0.14);
+  border-color: var(--at-cyan);
+}
+
+/* --------------------------------------------------------------- layout */
+.at-section {
+  width: min(100%, 1280px);
+  margin-inline: auto;
+  padding: clamp(4rem, 9vw, 7.5rem) clamp(1.15rem, 4vw, 3.5rem);
+}
+
+.at-title {
+  margin: 0 0 1.4rem;
+  font-size: clamp(2.1rem, 5.6vw, 4.4rem);
+  font-weight: 720;
+  letter-spacing: -0.045em;
+  line-height: 0.98;
+}
+
+.at-title em {
+  color: var(--at-cyan);
+  font-style: normal;
+}
+
+.at-section-lede {
+  max-width: 62ch;
+  margin: 0 0 2.6rem;
+  color: var(--at-muted);
+  font-size: clamp(0.98rem, 1.5vw, 1.1rem);
+  line-height: 1.65;
+}
+
+.airtrace-page .micro-label {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.68rem;
+  font-weight: 520;
+  letter-spacing: 0.16em;
+  line-height: 1.45;
+  text-transform: uppercase;
+}
+
+/* ----------------------------------------------------------------- hero */
+.at-hero {
+  display: grid;
+  gap: clamp(1.6rem, 4vw, 3rem);
+  align-items: center;
+  width: min(100%, 1280px);
+  margin-inline: auto;
+  padding: clamp(2rem, 6vw, 4.5rem) clamp(1.15rem, 4vw, 3.5rem) clamp(3rem, 6vw, 5rem);
+  /* Phones: headline, then the bot, then the supporting copy. */
+  grid-template-areas: "head" "stage" "tail";
+}
+
+.at-hero-head { grid-area: head; }
+.bot-stage { grid-area: stage; }
+.at-hero-tail { grid-area: tail; }
+
+@media (min-width: 980px) {
+  .at-hero {
+    /* Desktop: copy stacks in the left column, bot spans the right. */
+    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+    grid-template-areas:
+      "head stage"
+      "tail stage";
+    align-content: center;
+  }
+
+  .at-hero-head { align-self: end; }
+  .at-hero-tail { align-self: start; }
+}
+
+.at-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 0 0 1.5rem;
+  padding: 0.45rem 0.9rem;
+  border: 1px solid var(--at-line-strong);
+  border-radius: 999px;
+  color: var(--at-cyan);
+}
+
+.at-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--at-cyan);
+  box-shadow: 0 0 0 0 rgba(62, 233, 255, 0.6);
+  animation: at-pulse 2.4s ease-out infinite;
+}
+
+@keyframes at-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(62, 233, 255, 0.55); }
+  70%  { box-shadow: 0 0 0 9px rgba(62, 233, 255, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(62, 233, 255, 0); }
+}
+
+.at-hero h1 {
+  margin: 0 0 0.6rem;
+  font-size: clamp(2.2rem, 6.4vw, 4.9rem);
+  font-weight: 760;
+  letter-spacing: -0.05em;
+  line-height: 0.96;
+  text-transform: uppercase;
+}
+
+.at-hero h1 em {
+  color: var(--at-cyan);
+  font-style: normal;
+  text-shadow: 0 0 38px rgba(62, 233, 255, 0.35);
+}
+
+.at-lede {
+  max-width: 46ch;
+  margin: 0 0 2rem;
+  color: var(--at-muted);
+  font-size: clamp(1rem, 1.6vw, 1.12rem);
+  line-height: 1.65;
+}
+
+.at-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-bottom: 1.8rem;
+}
+
+.at-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 46px;
+  padding: 0.85rem 1.5rem;
+  border-radius: 999px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+.at-btn:hover { transform: translateY(-2px); }
+
+.at-btn-primary {
+  background: linear-gradient(120deg, #3ee9ff, #58b6ff);
+  color: #04121a;
+  box-shadow: 0 12px 34px -14px rgba(62, 233, 255, 0.8);
+}
+
+.at-btn-ghost {
+  border: 1px solid var(--at-line-strong);
+  color: var(--at-text);
+}
+
+.at-btn-ghost:hover {
+  background: var(--at-panel-strong);
+  border-color: var(--at-cyan);
+}
+
+/* ------------------------------------------------------------ bot stage */
+.bot-stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.bot-stage-glow {
+  position: absolute;
+  inset: 6% 4% 12%;
+  background: radial-gradient(circle at 50% 46%, rgba(62, 233, 255, 0.22), transparent 64%);
+  filter: blur(12px);
+  pointer-events: none;
+}
+
+/* Concentric radar rings behind the bot. */
+.bot-stage-rings {
+  position: absolute;
+  left: 50%;
+  top: 52%;
+  width: min(30rem, 88%);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.bot-stage-rings span {
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(62, 233, 255, 0.24);
+  border-radius: 50%;
+  animation: at-ring 4.6s ease-out infinite;
+}
+
+.bot-stage-rings span:nth-child(2) { animation-delay: 1.5s; }
+.bot-stage-rings span:nth-child(3) { animation-delay: 3s; }
+
+@keyframes at-ring {
+  0%   { transform: scale(0.32); opacity: 0; }
+  18%  { opacity: 0.75; }
+  100% { transform: scale(1); opacity: 0; }
+}
+
+.bot-canvas {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: clamp(20rem, 46vh, 34rem);
+}
+
+.bot-bubble {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-height: 3.1rem;
+  max-width: min(30rem, 92%);
+  margin-top: -1.2rem;
+  padding: 0.85rem 1.15rem;
+  background: rgba(10, 16, 24, 0.86);
+  border: 1px solid var(--at-line-strong);
+  border-radius: 999px;
+  backdrop-filter: blur(10px);
+}
+
+.bot-bubble p {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.bot-bubble-dot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--at-cyan);
+  box-shadow: 0 0 12px rgba(62, 233, 255, 0.9);
+}
+
+.bot-hint {
+  margin-top: 0.85rem;
+  color: var(--at-meta);
+}
+
+.bot-expressions {
+  z-index: 3;
+  width: 100%;
+  margin-top: 1.4rem;
+  text-align: center;
+}
+
+.bot-expressions-label {
+  margin: 0 0 0.7rem;
+  color: var(--at-muted);
+}
+
+.bot-expression-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.45rem;
+}
+
+.bot-chip {
+  min-height: 36px;
+  padding: 0.5rem 0.9rem;
+  background: var(--at-panel);
+  border: 1px solid var(--at-line);
+  border-radius: 999px;
+  color: var(--at-muted);
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 550;
+  transition: all 0.2s ease;
+}
+
+.bot-chip:hover {
+  color: var(--at-text);
+  border-color: var(--at-line-strong);
+}
+
+.bot-chip.is-active {
+  background: rgba(62, 233, 255, 0.16);
+  border-color: var(--at-cyan);
+  color: #d9f8ff;
+}
+
+/* ----------------------------------------------------------- statement */
+.at-statement {
+  padding-block: clamp(3rem, 7vw, 5.5rem);
+  text-align: center;
+}
+
+.at-statement-line {
+  margin: 0 auto 0.4rem;
+  max-width: 30ch;
+  color: var(--at-muted);
+  font-size: clamp(1.3rem, 3.2vw, 2.3rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+}
+
+.at-statement-line.is-accent {
+  max-width: 34ch;
+  color: var(--at-text);
+}
+
+/* ------------------------------------------------------------- abilities */
+/* These lived on a shared selector with a section that was cut, so they are
+   declared here in full. Must stay above the min-width column overrides. */
+.at-feature-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+.at-feature {
+  padding: 1.5rem;
+  background: var(--at-panel);
+  border: 1px solid var(--at-line);
+  border-radius: var(--at-radius);
+  transition: border-color 0.25s ease, transform 0.25s ease, background 0.25s ease;
+}
+
+.at-feature:hover {
+  background: var(--at-panel-strong);
+  border-color: var(--at-line-strong);
+  transform: translateY(-3px);
+}
+
+.at-feature h3 {
+  margin: 0 0 0.55rem;
+  font-size: 1.05rem;
+  font-weight: 640;
+  letter-spacing: -0.015em;
+}
+
+.at-feature p {
+  margin: 0;
+  color: var(--at-muted);
+  font-size: 0.89rem;
+  line-height: 1.6;
+}
+
+
+/* -------------------------------------------------------------- roomsim */
+.roomsim {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 2.8rem;
+}
+
+@media (min-width: 1000px) {
+  .roomsim { grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); }
+}
+
+.roomsim-map-wrap {
+  padding: 1rem;
+  background: linear-gradient(160deg, rgba(10, 22, 32, 0.9), rgba(6, 10, 16, 0.9));
+  border: 1px solid var(--at-line);
+  border-radius: var(--at-radius);
+}
+
+.roomsim-map {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  cursor: grab;
+  touch-action: none;
+}
+
+.roomsim-map.is-dragging { cursor: grabbing; }
+
+.roomsim-zone-label {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 2.4px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.roomsim-bot-label {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 2.6px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.roomsim-zone rect { transition: fill 0.25s ease, stroke 0.25s ease; }
+
+.roomsim-pings circle {
+  animation: at-ping 3.3s ease-out infinite;
+  transform-origin: center;
+}
+
+@keyframes at-ping {
+  0%   { r: 4; opacity: 0.85; }
+  100% { r: 64; opacity: 0; }
+}
+
+.roomsim-target { cursor: grab; }
+.roomsim-target circle { transition: none; }
+
+.roomsim-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.9rem;
+}
+
+.roomsim-toggle {
+  min-height: 36px;
+  padding: 0.45rem 0.9rem;
+  background: var(--at-panel);
+  border: 1px solid var(--at-line);
+  border-radius: 999px;
+  color: var(--at-muted);
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 550;
+  transition: all 0.2s ease;
+}
+
+.roomsim-toggle:hover { color: var(--at-text); border-color: var(--at-line-strong); }
+
+.roomsim-toggle.is-on {
+  background: rgba(167, 139, 250, 0.18);
+  border-color: var(--at-violet);
+  color: #ddd2ff;
+}
+
+.roomsim-tip {
+  margin-left: auto;
+  color: var(--at-meta);
+  font-size: 0.62rem;
+}
+
+.roomsim-side {
+  display: grid;
+  gap: 1rem;
+  align-content: start;
+}
+
+.roomsim-readout,
+.roomsim-log {
+  padding: 1.2rem;
+  background: var(--at-panel);
+  border: 1px solid var(--at-line);
+  border-radius: var(--at-radius);
+}
+
+.roomsim-readout-title {
+  margin: 0 0 1rem;
+  color: var(--at-cyan);
+}
+
+.roomsim-readout dl { display: grid; gap: 0.7rem; margin: 0; }
+
+.roomsim-readout dl > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.65rem;
+  border-bottom: 1px solid rgba(132, 192, 228, 0.09);
+}
+
+.roomsim-readout dl > div:last-child { border-bottom: none; padding-bottom: 0; }
+
+.roomsim-readout dt {
+  color: var(--at-muted);
+  font-size: 0.8rem;
+}
+
+.roomsim-readout dd {
+  margin: 0;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.84rem;
+  font-weight: 550;
+  text-align: right;
+}
+
+.roomsim-readout dd.is-live { color: var(--at-cyan); }
+
+.roomsim-log ul {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  min-height: 11rem;
+  align-content: start;
+}
+
+.roomsim-log li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.6rem;
+  padding-left: 0.7rem;
+  border-left: 2px solid rgba(132, 192, 228, 0.22);
+  color: var(--at-muted);
+  font-size: 0.78rem;
+  line-height: 1.4;
+  animation: at-log-in 0.35s ease-out;
+}
+
+@keyframes at-log-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.roomsim-log-time {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.68rem;
+  color: var(--at-meta);
+}
+
+.roomsim-log-entry { border-left-color: var(--at-cyan); color: #cdeaf4; }
+.roomsim-log-exit  { border-left-color: #ffab6b; color: #f3d9c4; }
+.roomsim-log-zone  { border-left-color: rgba(62, 233, 255, 0.6); }
+.roomsim-log-info  { border-left-color: var(--at-violet); }
+.roomsim-log-empty { border-left-color: transparent; grid-template-columns: 1fr; }
+
+@media (min-width: 700px) {
+  .at-feature-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 1080px) {
+  .at-feature-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+.at-feature-index {
+  margin: 0 0 0.9rem;
+  color: var(--at-cyan);
+}
+
+/* --------------------------------------------------------- early access */
+.at-access {
+  display: grid;
+  gap: clamp(1.6rem, 4vw, 3rem);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 940px) {
+  .at-access { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); align-items: start; }
+}
+
+.at-access-copy p {
+  max-width: 46ch;
+  color: var(--at-muted);
+  font-size: 0.98rem;
+  line-height: 1.65;
+}
+
+.at-access-reply {
+  padding: 0.75rem 1rem;
+  background: rgba(62, 233, 255, 0.07);
+  border-left: 2px solid var(--at-cyan);
+  border-radius: 0 8px 8px 0;
+  color: #bfe6f2 !important;
+  font-size: 0.87rem !important;
+}
+
+.access-form {
+  padding: clamp(1.4rem, 3vw, 2.2rem);
+  background: var(--at-panel);
+  border: 1px solid var(--at-line);
+  border-radius: var(--at-radius);
+}
+
+.access-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+  margin-bottom: 1.2rem;
+}
+
+@media (min-width: 620px) {
+  .access-grid { grid-template-columns: repeat(2, 1fr); }
+  .access-grid .access-field:last-child { grid-column: 1 / -1; }
+}
+
+.access-field { display: grid; gap: 0.45rem; }
+
+.access-field > span {
+  color: var(--at-muted);
+  font-size: 0.78rem;
+  font-weight: 550;
+}
+
+.access-field em {
+  color: var(--at-meta);
+  font-size: 0.72rem;
+  font-style: normal;
+}
+
+.access-field input,
+.access-field select {
+  width: 100%;
+  min-height: 46px;
+  padding: 0.7rem 0.9rem;
+  background: rgba(6, 10, 16, 0.75);
+  border: 1px solid var(--at-line);
+  border-radius: 9px;
+  color: var(--at-text);
+  font-family: inherit;
+  font-size: 0.92rem;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.access-field input::placeholder { color: rgba(147, 160, 179, 0.55); }
+
+.access-field input:focus,
+.access-field select:focus {
+  background: rgba(8, 14, 22, 0.95);
+  border-color: var(--at-cyan);
+  outline: none;
+}
+
+.access-field select {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, #93a0b3 50%), linear-gradient(135deg, #93a0b3 50%, transparent 50%);
+  background-position: calc(100% - 18px) 50%, calc(100% - 13px) 50%;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 2.4rem;
+}
+
+.access-field select option { background: #0b0e14; color: var(--at-text); }
+
+/* Honeypot: off-screen but still focusable-by-bot. */
+.access-hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.access-check {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.7rem;
+  align-items: start;
+  margin-bottom: 1.3rem;
+  cursor: pointer;
+}
+
+.access-check input {
+  width: 18px;
+  height: 18px;
+  margin-top: 0.15rem;
+  accent-color: var(--at-cyan);
+  cursor: pointer;
+}
+
+.access-check span {
+  color: var(--at-muted);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.access-check em {
+  display: block;
+  color: var(--at-meta);
+  font-size: 0.76rem;
+  font-style: normal;
+}
+
+.access-submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  width: 100%;
+  min-height: 52px;
+  background: linear-gradient(120deg, #3ee9ff, #58b6ff);
+  border: none;
+  border-radius: 10px;
+  color: #04121a;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.access-submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 38px -16px rgba(62, 233, 255, 0.85);
+}
+
+.access-submit:disabled { cursor: not-allowed; opacity: 0.6; }
+
+.access-error {
+  margin: 0 0 1rem;
+  padding: 0.7rem 0.9rem;
+  background: rgba(255, 122, 122, 0.1);
+  border-left: 2px solid #ff8a8a;
+  border-radius: 0 7px 7px 0;
+  color: #ffc6c6;
+  font-size: 0.84rem;
+}
+
+.access-note {
+  margin: 1rem 0 0;
+  color: var(--at-meta);
+  font-size: 0.76rem;
+  text-align: center;
+}
+
+.access-done {
+  padding: clamp(1.8rem, 4vw, 2.8rem);
+  background: rgba(62, 233, 255, 0.07);
+  border: 1px solid var(--at-cyan);
+  border-radius: var(--at-radius);
+  text-align: center;
+}
+
+.access-done-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  margin-bottom: 1.1rem;
+  background: rgba(62, 233, 255, 0.16);
+  border-radius: 50%;
+  color: var(--at-cyan);
+}
+
+.access-done h3 {
+  margin: 0 0 0.7rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.access-done p {
+  max-width: 42ch;
+  margin: 0 auto;
+  color: var(--at-muted);
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.access-done strong { color: var(--at-text); }
+
+.access-reset {
+  margin-top: 1.4rem;
+  padding: 0.6rem 1.2rem;
+  background: transparent;
+  border: 1px solid var(--at-line-strong);
+  border-radius: 999px;
+  color: var(--at-text);
+  cursor: pointer;
+  font-size: 0.83rem;
+  transition: background 0.2s ease;
+}
+
+.access-reset:hover { background: var(--at-panel-strong); }
+
+/* --------------------------------------------------------------- footer */
+.at-footer {
+  width: min(100%, 1280px);
+  margin-inline: auto;
+  padding: clamp(2.5rem, 5vw, 4rem) clamp(1.15rem, 4vw, 3.5rem) 3rem;
+  border-top: 1px solid var(--at-line);
+}
+
+.at-footer-top {
+  display: grid;
+  gap: 1.6rem;
+  margin-bottom: 2rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 760px) {
+  .at-footer-top { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); }
+}
+
+.at-footer .at-brand-mark { display: block; margin: 0 0 0.7rem; font-size: 1.2rem; }
+
+.at-footer-note {
+  max-width: 46ch;
+  margin: 0;
+  color: var(--at-muted);
+  font-size: 0.84rem;
+  line-height: 1.6;
+}
+
+.at-footer-links {
+  display: grid;
+  gap: 0.6rem;
+  align-content: start;
+}
+
+.at-footer-links a {
+  color: var(--at-muted);
+  font-size: 0.87rem;
+  transition: color 0.2s ease;
+}
+
+.at-footer-links a:hover { color: var(--at-cyan); }
+
+.at-footer-legal {
+  margin: 0;
+  color: var(--at-meta);
+}
+
+/* -------------------------------------------------------- reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .airtrace-page *,
+  .airtrace-page *::before,
+  .airtrace-page *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  .bot-stage-rings,
+  .roomsim-pings { display: none; }
+}
+
+
+/* ------------------------------------------------------------- abilities */
+/* Six short cards; three across once there's room. */
+@media (min-width: 1080px) {
+  .at-feature-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* ---------------------------------------------------------------- inside */
+.at-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin: 0 0 1.2rem;
+  padding: 0;
+  list-style: none;
+}
+
+.at-chips li {
+  padding: 0.55rem 1rem;
+  background: var(--at-panel);
+  border: 1px solid var(--at-line);
+  border-radius: 999px;
+  color: var(--at-text);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.8rem;
+}
+
+.at-inside-note {
+  max-width: 52ch;
+  margin: 0;
+  color: var(--at-meta);
+  font-size: 0.86rem;
+  line-height: 1.6;
+}
+
+/* The page is short now, so sections don't need the full editorial gutter. */
+.at-section { padding-block: clamp(3rem, 6.5vw, 5.5rem); }
+.at-title { margin-bottom: 1.6rem; }
