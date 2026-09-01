@@ -37,6 +37,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.9,
     },
+    {
+      url: `${siteUrl}/beamfall`,
+      lastModified: new Date("2026-08-31"),
+      changeFrequency: "monthly",
+      priority: 0.92,
+    },
     ...articlePages,
     ...projectPages,
   ];

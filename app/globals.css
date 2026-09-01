@@ -914,6 +914,7 @@ button {
 .experience-section,
 .capabilities-section,
 .work-section,
+.games-section,
 .process-section,
 .insights-section {
   padding-top: clamp(7rem, 12vw, 13rem);
@@ -1215,6 +1216,131 @@ button {
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
+
+/* Games */
+.games-section { border-top: 1px solid var(--line); }
+
+.game-feature {
+  position: relative;
+  display: grid;
+  min-height: 640px;
+  margin-top: clamp(3rem, 6vw, 6rem);
+  overflow: hidden;
+  grid-template-columns: minmax(0, 0.9fr) minmax(420px, 1.1fr);
+  border: 1px solid var(--ink);
+  background: #070a12;
+  color: #f3f6ff;
+}
+
+.game-feature-copy {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  padding: clamp(1.4rem, 4vw, 4rem);
+  flex-direction: column;
+  justify-content: center;
+}
+
+.game-feature-head {
+  position: absolute;
+  top: clamp(1.4rem, 3vw, 2.2rem);
+  right: clamp(1.4rem, 3vw, 2.2rem);
+  left: clamp(1.4rem, 3vw, 2.2rem);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.game-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #a7b2c5;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.game-live i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #4ee7ff;
+  box-shadow: 0 0 14px #4ee7ff;
+}
+
+.game-feature-copy > img {
+  border: 1px solid rgba(255,255,255,0.22);
+  border-radius: 24px;
+  box-shadow: 0 20px 55px rgba(0,0,0,0.42);
+}
+
+.game-feature h3 {
+  margin: 1.6rem 0 0.9rem;
+  font-size: clamp(4rem, 8vw, 8.5rem);
+  letter-spacing: -0.075em;
+  line-height: 0.78;
+  text-transform: uppercase;
+}
+
+.game-feature-copy > p {
+  max-width: 53ch;
+  margin: 1rem 0 0;
+  color: #aab4c7;
+  line-height: 1.6;
+}
+
+.game-feature-link {
+  display: flex;
+  width: fit-content;
+  margin-top: 2rem;
+  padding: 0.85rem 1rem;
+  gap: 1.4rem;
+  border: 1px solid #4ee7ff;
+  color: #4ee7ff;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.64rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.game-feature-link i { font-style: normal; }
+
+.game-feature-visual {
+  position: relative;
+  display: grid;
+  min-height: 640px;
+  place-items: center;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 55% 40%, rgba(78,231,255,0.14), transparent 17rem),
+    linear-gradient(rgba(155,173,204,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(155,173,204,0.06) 1px, transparent 1px);
+  background-size: auto, 40px 40px, 40px 40px;
+}
+
+.game-feature-visual > img {
+  position: relative;
+  z-index: 2;
+  width: min(52%, 360px);
+  height: auto;
+  border: 7px solid #03050a;
+  border-radius: 38px;
+  box-shadow: 0 36px 80px rgba(0,0,0,0.58), 0 0 70px rgba(78,231,255,0.12);
+  transform: rotate(4deg) translateY(8%);
+  transition: transform 400ms cubic-bezier(.2,.7,.2,1);
+}
+
+.game-feature:hover .game-feature-visual > img {
+  transform: rotate(1.5deg) translateY(4%) scale(1.025);
+}
+
+.game-beam { position: absolute; z-index: 1; width: 88%; height: 3px; }
+.game-beam::after { position: absolute; inset: -8px 0; background: inherit; filter: blur(12px); content: ""; }
+.game-beam-cyan { top: 29%; left: -4%; background: #4ee7ff; transform: rotate(16deg); }
+.game-beam-pink { right: -9%; bottom: 24%; background: #ff4da6; transform: rotate(-22deg); }
 
 /* Build lab */
 .lab-section {
@@ -2276,6 +2402,10 @@ button {
   .project-card .project-browser.is-compact .browser-canvas,
   .project-card .project-browser .browser-canvas { min-height: 230px; }
 
+  .game-feature { grid-template-columns: 1fr; }
+  .game-feature-copy { min-height: 540px; }
+  .game-feature-visual { min-height: 600px; }
+
   .lab-section {
     min-height: auto;
     padding-block: 6rem;
@@ -2319,6 +2449,12 @@ button {
 }
 
 @media (max-width: 599px) {
+  .game-feature-head { align-items: flex-start; flex-direction: column; }
+  .game-feature-copy { min-height: 580px; }
+  .game-feature h3 { font-size: clamp(3.5rem, 19vw, 6rem); }
+  .game-feature-visual { min-height: 520px; }
+  .game-feature-visual > img { width: 68%; }
+
   .nav-brand .brand-mark { display: none; }
   .brand-signature { font-size: 1.8rem; }
   .nav-cta { font-size: 0.56rem; }

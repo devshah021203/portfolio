@@ -1,3 +1,5 @@
+import Image from "next/image";
+import Link from "next/link";
 import { StickyNav } from "@/components/layout/StickyNav";
 import { SiteMotion } from "@/components/motion/SiteMotion";
 import { ProjectGrid } from "@/components/projects/ProjectGrid";
@@ -81,6 +83,8 @@ const structuredData = {
         "Artificial intelligence travel planning",
         "Local ecommerce",
         "Business development",
+        "Game design",
+        "iOS game development",
       ],
       hasOccupation: experiences.map((experience) => ({
         "@type": "Occupation",
@@ -280,9 +284,42 @@ export default function Home() {
           <ProjectGrid />
         </section>
 
+        <section id="games" className="games-section section-shell" aria-labelledby="games-title">
+          <div className="section-index micro-label">06 / Games</div>
+          <div className="section-heading-row">
+            <h2 id="games-title" className="section-title" data-reveal>
+              Small rules. <em>Deep systems.</em>
+            </h2>
+            <p className="annotation" data-reveal>Designed, built and shipped.</p>
+          </div>
+          <Link href="/beamfall" className="game-feature" data-cursor="PLAY" data-reveal>
+            <div className="game-feature-copy">
+              <div className="game-feature-head">
+                <span className="micro-label">01 / Puzzle · iPhone</span>
+                <span className="game-live"><i /> Live on the App Store</span>
+              </div>
+              <Image src="/beamfall/icon.webp" width={104} height={104} alt="BeamFall app icon" />
+              <h3>BeamFall</h3>
+              <p>A pure light-routing puzzle with 100 machine-verified levels, ten boss runs and no ads or purchases.</p>
+              <span className="game-feature-link">Explore the game <i aria-hidden="true">↗</i></span>
+            </div>
+            <div className="game-feature-visual">
+              <div className="game-beam game-beam-cyan" aria-hidden="true" />
+              <div className="game-beam game-beam-pink" aria-hidden="true" />
+              <Image
+                src="/beamfall/screens/boss.webp"
+                width={1287}
+                height={2796}
+                alt="BeamFall boss puzzle showing coloured light routed across a grid"
+                sizes="(max-width: 899px) 72vw, 32vw"
+              />
+            </div>
+          </Link>
+        </section>
+
         <section id="lab" className="lab-section" aria-labelledby="lab-title">
           <div className="lab-inner section-shell">
-            <div className="section-index micro-label">06 / Build Lab</div>
+            <div className="section-index micro-label">07 / Build Lab</div>
             <div className="section-heading-row">
               <h2 id="lab-title" className="section-title">
                 Things I build <em>before they are obvious.</em>
@@ -295,7 +332,7 @@ export default function Home() {
         </section>
 
         <section id="process" className="process-section section-shell" aria-labelledby="process-title">
-          <div className="section-index micro-label">07 / Process</div>
+          <div className="section-index micro-label">08 / Process</div>
           <div className="section-heading-row">
             <h2 id="process-title" className="section-title" data-reveal>
               A clear process keeps creative work <em>useful.</em>
@@ -332,7 +369,7 @@ export default function Home() {
         </section>
 
         <section id="insights" className="insights-section section-shell" aria-labelledby="insights-title">
-          <div className="section-index micro-label">08 / Insights</div>
+          <div className="section-index micro-label">09 / Insights</div>
           <div className="section-heading-row">
             <h2 id="insights-title" className="section-title" data-reveal>
               Useful notes from <em>building the work.</em>
@@ -348,7 +385,7 @@ export default function Home() {
         </section>
 
         <section id="motion" className="motion-section section-shell" aria-labelledby="motion-title">
-          <div className="section-index micro-label">09 / Motion System</div>
+          <div className="section-index micro-label">10 / Motion System</div>
           <div className="section-heading-row">
             <h2 id="motion-title" className="section-title" data-reveal>
               Animation should <em>explain the page.</em>
@@ -381,7 +418,7 @@ export default function Home() {
         </section>
 
         <section id="contact" className="contact-section section-shell" aria-labelledby="contact-title">
-          <div className="section-index micro-label">10 / Contact</div>
+          <div className="section-index micro-label">11 / Contact</div>
           <div className="contact-layout">
             <div>
               <h2 id="contact-title" className="contact-title" data-reveal>Let’s<br />build.</h2>
@@ -398,6 +435,14 @@ export default function Home() {
             </div>
             <div className="featured-links" data-reveal>
               <span className="micro-label">Featured links</span>
+              <MagneticLink
+                href="https://apps.apple.com/ca/app/beamfall/id6805519789"
+                external
+                cursor="PLAY"
+                ariaLabel="Download BeamFall on the App Store"
+              >
+                <span>BeamFall on the App Store</span><span aria-hidden="true">↗</span>
+              </MagneticLink>
               {projects.map((project) => (
                 <MagneticLink
                   key={project.slug}

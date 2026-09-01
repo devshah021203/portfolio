@@ -3,13 +3,14 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 test("keeps portfolio content and live links data-driven", async () => {
-  const [projects, experience, articles, cursor, navigation, seo] = await Promise.all([
+  const [projects, experience, articles, cursor, navigation, seo, beamfall] = await Promise.all([
     readFile(new URL("../data/projects.ts", import.meta.url), "utf8"),
     readFile(new URL("../data/experience.ts", import.meta.url), "utf8"),
     readFile(new URL("../data/articles.ts", import.meta.url), "utf8"),
     readFile(new URL("../components/ui/CustomCursor.tsx", import.meta.url), "utf8"),
     readFile(new URL("../components/layout/StickyNav.tsx", import.meta.url), "utf8"),
     readFile(new URL("../lib/seo.ts", import.meta.url), "utf8"),
+    readFile(new URL("../app/beamfall/page.tsx", import.meta.url), "utf8"),
   ]);
 
   for (const liveUrl of [
@@ -34,4 +35,8 @@ test("keeps portfolio content and live links data-driven", async () => {
   assert.doesNotMatch(cursor, /\|\| "DS"/);
   assert.match(navigation, /brand-signature/);
   assert.match(seo, /NEXT_PUBLIC_SITE_URL/);
+  assert.match(navigation, /games/);
+  assert.match(beamfall, /apps\.apple\.com\/ca\/app\/beamfall\/id6805519789/);
+  assert.match(beamfall, /Google Play.*Launching soon/s);
+  assert.match(beamfall, /machine-verified/);
 });
