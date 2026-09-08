@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono, Schibsted_Grotesk, Young_Serif } from "next/font/google";
 import Link from "next/link";
+import HeaderScroll from "@/components/HeaderScroll";
 import Lighting from "@/components/Lighting";
 import Reveal from "@/components/Reveal";
 import WindsorClock from "@/components/WindsorClock";
@@ -22,6 +23,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }} />
         <Lighting />
         <Reveal />
+        <HeaderScroll />
         <header className="site-header">
           <Link href="/" className="brand" aria-label="Dev Shah, home">Dev Shah</Link>
           <nav className="nav" aria-label="Site">

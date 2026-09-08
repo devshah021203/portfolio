@@ -158,15 +158,30 @@ export default function Sky() {
     sunStore.scrubTo(Math.round(f * 1439));
   }, []);
 
+  // Touch needs a clear horizontal intent before the sky takes the gesture,
+  // otherwise every scroll that starts on the hero would change the time.
+  const start = useRef<{ x: number; y: number; id: number } | null>(null);
   const onPointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
-    dragging.current = true;
-    (e.target as HTMLElement).setPointerCapture(e.pointerId);
-    scrubFromPointer(e);
+    start.current = { x: e.clientX, y: e.clientY, id: e.pointerId };
+    if (e.pointerType === "mouse") {
+      dragging.current = true;
+      (e.target as HTMLElement).setPointerCapture(e.pointerId);
+      scrubFromPointer(e);
+    }
   };
   const onPointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
-    if (dragging.current) scrubFromPointer(e);
+    if (dragging.current) { scrubFromPointer(e); return; }
+    const s = start.current;
+    if (!s || s.id !== e.pointerId) return;
+    const dx = e.clientX - s.x;
+    const dy = e.clientY - s.y;
+    if (Math.abs(dx) > 14 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+      dragging.current = true;
+      (e.target as HTMLElement).setPointerCapture(e.pointerId);
+      scrubFromPointer(e);
+    }
   };
-  const onPointerUp = () => { dragging.current = false; };
+  const onPointerUp = () => { dragging.current = false; start.current = null; };
 
   const times = sun.hydrated ? sunTimes(sun.date) : { sunrise: null, sunset: null };
   const label = sun.hydrated ? minutesLabel(sun.minutes) : "";
