@@ -1,130 +1,183 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { StickyNav } from "@/components/layout/StickyNav";
-import { SiteMotion } from "@/components/motion/SiteMotion";
-import { ProjectVisual } from "@/components/projects/ProjectVisual";
-import { CustomCursor } from "@/components/ui/CustomCursor";
-import { MagneticLink } from "@/components/ui/MagneticLink";
+import DwelloForm from "@/components/DwelloForm";
+import { builds, getBuild } from "@/data/builds";
 import { getProject, projects } from "@/data/projects";
-import { projectMetadata, siteUrl } from "@/lib/seo";
+import { siteUrl } from "@/lib/seo";
+
+type Params = { slug: string };
+
+const order = [...projects.map((p) => p.slug), ...builds.map((b) => b.slug)];
 
 export function generateStaticParams() {
-  return projects.map((project) => ({ slug: project.slug }));
+  return order.map((slug) => ({ slug }));
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const { slug } = await params;
   const project = getProject(slug);
-  return project ? projectMetadata(project) : {};
+  const build = getBuild(slug);
+  const item = project ?? build;
+  if (!item) return {};
+  const title = project ? `${project.name} — ${project.category}` : `${build!.name} — ${build!.kind}`;
+  return {
+    title,
+    description: item.summary,
+    alternates: { canonical: `/work/${slug}` },
+    openGraph: {
+      title,
+      description: item.summary,
+      url: `/work/${slug}`,
+      type: "article",
+      images: [{ url: item.image, alt: item.imageAlt }],
+    },
+    twitter: { card: "summary_large_image", title, description: item.summary, images: [item.image] },
+  };
 }
 
-export default async function ProjectPage({ params }: { params: Promise<{ slug: string }> }) {
+function nextOf(slug: string) {
+  const i = order.indexOf(slug);
+  const next = order[(i + 1) % order.length];
+  return getProject(next) ?? getBuild(next)!;
+}
+
+export default async function WorkPage({ params }: { params: Promise<Params> }) {
   const { slug } = await params;
   const project = getProject(slug);
-  if (!project) notFound();
+  const build = getBuild(slug);
+  if (!project && !build) notFound();
+  const item = (project ?? build)!;
+  const next = nextOf(slug);
 
-  const index = projects.findIndex((item) => item.slug === project.slug);
-  const nextProject = projects[(index + 1) % projects.length];
-  const projectStructuredData = {
+  const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "CreativeWork",
-    name: `${project.name} case study`,
-    description: project.description,
-    url: `${siteUrl}/work/${project.slug}`,
-    image: `${siteUrl}${project.image}`,
-    sameAs: project.url,
-    author: {
-      "@type": "Person",
-      "@id": `${siteUrl}/#dev-shah`,
-      name: "Dev Shah",
-    },
-    creator: {
-      "@type": "Person",
-      "@id": `${siteUrl}/#dev-shah`,
-      name: "Dev Shah",
-    },
+    "@type": build ? (build.slug === "beamfall" ? "VideoGame" : "Product") : "CreativeWork",
+    name: item.name,
+    url: `${siteUrl}/work/${slug}`,
+    image: `${siteUrl}${item.image}`,
+    description: item.summary,
+    author: { "@type": "Person", name: "Dev Shah", url: siteUrl },
+    ...(build?.slug === "beamfall"
+      ? {
+          applicationCategory: "GameApplication",
+          gamePlatform: ["iPhone", "iOS"],
+          offers: { "@type": "Offer", price: "0", priceCurrency: "CAD", url: build.url },
+        }
+      : {}),
+  };
+  const breadcrumb = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+      { "@type": "ListItem", position: 2, name: "Work", item: `${siteUrl}/#work` },
+      { "@type": "ListItem", position: 3, name: item.name, item: `${siteUrl}/work/${slug}` },
+    ],
   };
 
   return (
-    <SiteMotion>
-      <CustomCursor />
-      <StickyNav />
-      <main id="main-content" className="case-page">
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(projectStructuredData) }}
-        />
-        <article>
-          <header className="case-hero section-shell">
-            <div className="case-back-row">
-              <Link href="/#work" data-cursor="BACK">← Selected work</Link>
-              <span className="micro-label">{project.number} / Case Study / {project.category}</span>
-            </div>
-            <div className="case-heading-grid">
-              <div>
-                <h1>{project.name}</h1>
-                <MagneticLink
-                  href={project.url}
-                  external
-                  className="case-live-link"
-                  cursor="OPEN"
-                  ariaLabel={`Open ${project.name} live site`}
-                >
-                  {project.urlLabel} <span aria-hidden="true">↗</span>
-                </MagneticLink>
-                <p className="case-description">{project.description}</p>
-                <div className="case-steps" aria-label="Project phases">
-                  <span><b>01</b> Strategy</span>
-                  <span><b>02</b> Design</span>
-                  <span><b>03</b> Build</span>
-                </div>
-                <div className="case-role">
-                  <span className="micro-label">My role</span>
-                  <p>{project.role}</p>
-                </div>
-              </div>
-              <div className="case-visual-wrap" data-reveal>
-                <p className="annotation">{project.motion}</p>
-                <ProjectVisual project={project} />
-              </div>
-            </div>
-          </header>
+    <main className="wrap page">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
+      <Link href="/#work" className="back mono">Back to work</Link>
+      <p className="eyebrow mono">{project ? project.category : `${build!.kind} · ${build!.year}`}</p>
+      <h1 className="page-title display">{item.name}</h1>
+      <p className="page-tag">{item.tagline}</p>
 
-          <section className="case-story section-shell" aria-label="Case study details">
-            <article data-reveal>
-              <span className="micro-label">Challenge</span>
-              <h2>What had to change</h2>
-              <p>{project.challenge}</p>
-            </article>
-            <article data-reveal>
-              <span className="micro-label">Approach</span>
-              <h2>How I shaped it</h2>
-              <p>{project.approach}</p>
-            </article>
-            <article data-reveal>
-              <span className="micro-label">Outcome</span>
-              <h2>What the work delivered</h2>
-              <p>{project.outcome}</p>
-            </article>
-          </section>
+      <dl className="meta-grid">
+        <div>
+          <dt className="mono">Role</dt>
+          <dd>{item.role}</dd>
+        </div>
+        <div>
+          <dt className="mono">Stack</dt>
+          <dd className="chips">{item.stack.map((s) => <span key={s}>{s}</span>)}</dd>
+        </div>
+        <div>
+          <dt className="mono">{build ? "Where" : "Live"}</dt>
+          <dd>
+            {item.url ? (
+              <a href={item.url} rel="noopener">{project ? project.urlLabel : build!.urlLabel}</a>
+            ) : (
+              "Early access below"
+            )}
+          </dd>
+        </div>
+      </dl>
 
-          <section className="case-proof section-shell" aria-label="Project technologies and motion">
-            <div className="tag-list">
-              {project.stack.map((item) => <span key={item}>{item}</span>)}
-            </div>
-            <blockquote>{project.motion}</blockquote>
-          </section>
+      <div
+        className="page-media lit"
+        data-fit={build ? "contain" : "cover"}
+        data-ratio={build ? "tall" : undefined}
+        style={build ? { aspectRatio: build.slug === "beamfall" ? "16 / 9" : "4 / 3" } : undefined}
+      >
+        {build?.slug === "beamfall" ? (
+          <div className="gallery" style={{ padding: 24, gridAutoColumns: "min(200px, 40vw)" }}>
+            {build.gallery!.slice(0, 5).map((g) => (
+              <figure key={g.src}>
+                <Image src={g.src} alt={g.alt} width={1287} height={2796} sizes="200px" />
+              </figure>
+            ))}
+          </div>
+        ) : (
+          <Image src={item.image} alt={item.imageAlt} width={1600} height={1000} sizes="(max-width: 860px) 100vw, 1320px" priority />
+        )}
+      </div>
 
-          <footer className="case-next section-shell">
-            <span className="micro-label">Next project</span>
-            <Link href={`/work/${nextProject.slug}`} data-cursor="NEXT">
-              <span>{nextProject.name}</span>
-              <span aria-hidden="true">↗</span>
-            </Link>
-          </footer>
-        </article>
-      </main>
-    </SiteMotion>
+      <section className="story-wrap">
+        <p className="story-lede" style={{ marginTop: 56 }}>{item.description}</p>
+        {build && (
+          <ul className="facts">
+            {build.facts.map(([k, v]) => (
+              <li key={k}><span className="mono">{k}</span><strong>{v}</strong></li>
+            ))}
+          </ul>
+        )}
+        <div className="story" style={{ paddingTop: 0 }}>
+          <div><h2 className="display">The problem</h2><p>{item.challenge}</p></div>
+          <div><h2 className="display">The approach</h2><p>{item.approach}</p></div>
+          <div><h2 className="display">What shipped</h2><p>{item.outcome}</p></div>
+        </div>
+      </section>
+
+      {build?.slug === "beamfall" && build.gallery && (
+        <section aria-label="Screens" style={{ paddingBottom: 48 }}>
+          <div className="gallery">
+            {build.gallery.map((g) => (
+              <figure key={g.src}>
+                <Image src={g.src} alt={g.alt} width={1287} height={2796} sizes="240px" />
+                <figcaption>{g.alt}</figcaption>
+              </figure>
+            ))}
+          </div>
+          <p className="actions">
+            <a className="btn btn-fill" href={build.url} rel="noopener">Get BeamFall on the App Store</a>
+          </p>
+        </section>
+      )}
+
+      {build?.slug === "dwello" && (
+        <section className="signup" id="early-access" aria-labelledby="ea-title">
+          <div>
+            <h2 className="display" id="ea-title">Early access</h2>
+            <p>The first batch is small. Leave your email and you will hear from Dev directly when units are ready, with no newsletter in between.</p>
+          </div>
+          <DwelloForm />
+        </section>
+      )}
+
+      {project && (
+        <p className="actions" style={{ marginBottom: 40 }}>
+          <a className="btn btn-fill" href={project.url} rel="noopener">Visit {project.urlLabel}</a>
+        </p>
+      )}
+
+      <div className="next-link">
+        <span className="mono">Next</span>
+        <Link href={`/work/${next.slug}`}>{next.name}</Link>
+      </div>
+    </main>
   );
 }

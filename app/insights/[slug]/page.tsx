@@ -1,148 +1,106 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { StickyNav } from "@/components/layout/StickyNav";
-import { SiteMotion } from "@/components/motion/SiteMotion";
-import { CustomCursor } from "@/components/ui/CustomCursor";
 import { articles, getArticle } from "@/data/articles";
+import { EMAIL } from "@/components/CopyEmail";
 import { siteUrl } from "@/lib/seo";
 
+type Params = { slug: string };
+
 export function generateStaticParams() {
-  return articles.map((article) => ({ slug: article.slug }));
+  return articles.map((a) => ({ slug: a.slug }));
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const { slug } = await params;
-  const article = getArticle(slug);
-  if (!article) return {};
-
+  const a = getArticle(slug);
+  if (!a) return {};
   return {
-    title: article.title,
-    description: article.description,
-    keywords: article.keywords,
-    authors: [{ name: "Dev Shah", url: siteUrl }],
-    alternates: { canonical: `/insights/${article.slug}` },
+    title: a.title,
+    description: a.description,
+    keywords: a.keywords,
+    alternates: { canonical: `/insights/${slug}` },
     openGraph: {
-      title: article.title,
-      description: article.description,
-      url: `/insights/${article.slug}`,
-      siteName: "Dev Shah Portfolio",
+      title: a.title,
+      description: a.description,
+      url: `/insights/${slug}`,
       type: "article",
-      publishedTime: article.publishedAt,
-      modifiedTime: article.modifiedAt,
+      publishedTime: a.publishedAt,
+      modifiedTime: a.modifiedAt,
       authors: [siteUrl],
-      images: [{ url: "/og.png", width: 1536, height: 864, alt: article.title }],
     },
-    twitter: {
-      card: "summary_large_image",
-      title: article.title,
-      description: article.description,
-      images: ["/og.png"],
-    },
+    twitter: { card: "summary_large_image", title: a.title, description: a.description },
   };
 }
 
-export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
-  const article = getArticle(slug);
-  if (!article) notFound();
+function formatDate(iso: string) {
+  return new Date(`${iso}T12:00:00Z`).toLocaleDateString("en-CA", { year: "numeric", month: "long", day: "numeric" });
+}
 
-  const currentIndex = articles.findIndex((item) => item.slug === article.slug);
-  const nextArticle = articles[(currentIndex + 1) % articles.length];
-  const articleUrl = `${siteUrl}/insights/${article.slug}`;
-  const structuredData = {
+export default async function ArticlePage({ params }: { params: Promise<Params> }) {
+  const { slug } = await params;
+  const a = getArticle(slug);
+  if (!a) notFound();
+  const i = articles.findIndex((x) => x.slug === slug);
+  const next = articles[(i + 1) % articles.length];
+
+  const jsonLd = {
     "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "BlogPosting",
-        "@id": `${articleUrl}#article`,
-        headline: article.title,
-        description: article.description,
-        image: [`${siteUrl}/og.png`],
-        datePublished: article.publishedAt,
-        dateModified: article.modifiedAt,
-        mainEntityOfPage: articleUrl,
-        keywords: article.keywords.join(", "),
-        author: {
-          "@type": "Person",
-          "@id": `${siteUrl}/#dev-shah`,
-          name: "Dev Shah",
-          url: siteUrl,
-        },
-        publisher: {
-          "@type": "Person",
-          "@id": `${siteUrl}/#dev-shah`,
-          name: "Dev Shah",
-        },
-      },
-      {
-        "@type": "BreadcrumbList",
-        itemListElement: [
-          { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
-          { "@type": "ListItem", position: 2, name: "Insights", item: `${siteUrl}/insights` },
-          { "@type": "ListItem", position: 3, name: article.title, item: articleUrl },
-        ],
-      },
+    "@type": "BlogPosting",
+    headline: a.title,
+    description: a.description,
+    datePublished: a.publishedAt,
+    dateModified: a.modifiedAt,
+    keywords: a.keywords.join(", "),
+    mainEntityOfPage: `${siteUrl}/insights/${slug}`,
+    author: { "@type": "Person", name: "Dev Shah", url: siteUrl },
+    publisher: { "@type": "Person", name: "Dev Shah", url: siteUrl },
+    image: `${siteUrl}/og.png`,
+  };
+  const breadcrumb = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+      { "@type": "ListItem", position: 2, name: "Insights", item: `${siteUrl}/insights` },
+      { "@type": "ListItem", position: 3, name: a.title, item: `${siteUrl}/insights/${slug}` },
     ],
   };
 
   return (
-    <SiteMotion>
-      <CustomCursor />
-      <StickyNav />
-      <main id="main-content" className="article-page">
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-        />
-        <article>
-          <header className="article-hero section-shell">
-            <div className="insights-back-row">
-              <Link href="/insights" data-cursor="BACK">← All insights</Link>
-              <span className="micro-label">{article.number} / {article.category}</span>
-            </div>
-            <h1>{article.title}</h1>
-            <p className="article-deck">{article.description}</p>
-            <div className="article-byline micro-label">
-              <span>By Dev Shah</span>
-              <time dateTime={article.publishedAt}>July 15, 2026</time>
-              <span>{article.readingTime}</span>
-            </div>
-          </header>
-
-          <div className="article-layout section-shell">
-            <aside className="article-aside">
-              <span className="micro-label">Topics</span>
-              <div className="tag-list">
-                {article.keywords.slice(0, 4).map((keyword) => <span key={keyword}>{keyword}</span>)}
-              </div>
-              <Link href="/#contact" data-cursor="TALK">Discuss a project ↘</Link>
-            </aside>
-            <div className="article-body">
-              {article.introduction.map((paragraph) => <p className="article-lead" key={paragraph}>{paragraph}</p>)}
-              {article.sections.map((section) => (
-                <section key={section.heading}>
-                  <h2>{section.heading}</h2>
-                  {section.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
-                  {section.bullets && (
-                    <ul>
-                      {section.bullets.map((item) => <li key={item}>{item}</li>)}
-                    </ul>
-                  )}
-                </section>
-              ))}
-              <blockquote>{article.takeaway}</blockquote>
-            </div>
+    <main className="wrap page">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
+      <article className="article">
+        <header className="article-head">
+          <Link href="/insights" className="back mono">All insights</Link>
+          <p className="eyebrow mono">{a.category}</p>
+          <h1 className="article-title display">{a.title}</h1>
+          <div className="article-meta mono">
+            <span>Dev Shah</span>
+            <time dateTime={a.publishedAt}>{formatDate(a.publishedAt)}</time>
+            <span>{a.readingTime}</span>
           </div>
-
-          <footer className="article-next section-shell">
-            <span className="micro-label">Read next</span>
-            <Link href={`/insights/${nextArticle.slug}`} data-cursor="NEXT">
-              <span>{nextArticle.title}</span><span aria-hidden="true">↗</span>
-            </Link>
-          </footer>
-        </article>
-      </main>
-    </SiteMotion>
+        </header>
+        <div className="article-body">
+          {a.introduction.map((p, idx) => <p key={idx}>{p}</p>)}
+          {a.sections.map((s) => (
+            <section key={s.heading}>
+              <h2 className="display">{s.heading}</h2>
+              {s.paragraphs.map((p, idx) => <p key={idx}>{p}</p>)}
+              {s.bullets && <ul>{s.bullets.map((b) => <li key={b}>{b}</li>)}</ul>}
+            </section>
+          ))}
+          <aside className="takeaway">
+            <span className="mono">Takeaway</span>
+            <p>{a.takeaway}</p>
+          </aside>
+        </div>
+        <footer className="article-foot">
+          <p>Working on something in Windsor? Write to <a href={`mailto:${EMAIL}`}>{EMAIL}</a>.</p>
+          <p className="mono">Next: <Link href={`/insights/${next.slug}`}>{next.title}</Link></p>
+        </footer>
+      </article>
+    </main>
   );
 }

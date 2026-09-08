@@ -4,42 +4,38 @@ export type Experience = {
   role: string;
   description: string;
   url?: string;
-  linkLabel?: string;
 };
 
 export const experiences: Experience[] = [
   {
-    period: "2026 — Present",
+    period: "2026 — now",
     organization: "Voyagea",
     role: "Founder & Developer",
     description:
-      "Dev Shah is the Founder and Developer of Voyagea, a free AI travel planner that creates complete day-by-day itineraries with maps, budgets, hyperlocal tips and a digital V-Passport.",
+      "A free AI travel planner that turns saved places into complete day-by-day itineraries with maps, budgets, hyperlocal tips and a digital V-Passport. Product, design and the full stack.",
     url: "https://voyagea.travel",
-    linkLabel: "voyagea.travel",
   },
   {
-    period: "2026 — Present",
+    period: "2026 — now",
     organization: "PTRI Innovation",
-    role: "Business Development Officer (BDO)",
+    role: "Business Development Officer",
     description:
-      "As Business Development Officer at PTRI Innovation, Dev Shah supports growth, partnerships and market development for an AI-first technology company building intelligent digital platforms and scalable digital products.",
+      "Growth, partnerships and market development for an AI-first technology company building intelligent platforms and digital products. Also where BeamFall and Dwello are published.",
     url: "https://www.ptriinnovation.com",
-    linkLabel: "ptriinnovation.com",
   },
   {
-    period: "2025 — Present",
+    period: "2025 — now",
     organization: "Keri in Windsor",
     role: "Founder",
     description:
-      "Dev Shah is the Founder of Keri in Windsor, a seasonal mango business bringing premium Indian Kesar, Alphonso and Banganpalli mangoes to Windsor–Essex and nearby Ontario communities through limited seasonal batches and local delivery.",
+      "A seasonal mango business bringing premium Kesar, Alphonso and Banganpalli mangoes to Windsor–Essex and nearby Ontario communities in limited batches with local delivery. Over 100 boxes sold in the first season.",
     url: "https://keriinwindsor.ca",
-    linkLabel: "keriinwindsor.ca",
   },
   {
     period: "2023 — 2024",
     organization: "DreamYourDesign",
     role: "Graphic Designer & Creative Director",
     description:
-      "As Graphic Designer and Creative Director at DreamYourDesign, Dev Shah shaped visual identities, campaign creative, social content and cohesive brand systems—building the design foundation behind his later product and web work.",
+      "Visual identities, campaign creative, social content and brand systems. The design foundation behind everything above.",
   },
 ];
