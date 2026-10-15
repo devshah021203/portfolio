@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { articles, getArticle } from "@/data/articles";
-import { EMAIL } from "@/components/CopyEmail";
+import { EMAIL } from "@/lib/contact";
 import { siteUrl } from "@/lib/seo";
 
 type Params = { slug: string };

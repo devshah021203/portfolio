@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-export const EMAIL = "hello.devshah@gmail.com";
+import { EMAIL } from "@/lib/contact";
 
 export default function CopyEmail({ className = "" }: { className?: string }) {
   const [copied, setCopied] = useState(false);

@@ -15,6 +15,9 @@ const nextConfig: NextConfig = {
       { source: "/airtrace-deskbot", destination: "/work/dwello", permanent: true },
       { source: "/deskbot", destination: "/work/dwello", permanent: true },
       { source: "/beamfall", destination: "/work/beamfall", permanent: true },
+      // The Designs section was removed on 2026-10-15; send old links to the work.
+      { source: "/designs", destination: "/#work", permanent: true },
+      { source: "/designs/:brand*", destination: "/#work", permanent: true },
       { source: "/api/airtrace/early-access", destination: "/api/dwello/early-access", permanent: false },
     ];
   },

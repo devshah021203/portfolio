@@ -1,10 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import Bridge from "@/components/Bridge";
-import CopyEmail, { EMAIL } from "@/components/CopyEmail";
+import CopyEmail from "@/components/CopyEmail";
+import { EMAIL } from "@/lib/contact";
 import Sky from "@/components/Sky";
 import { articles } from "@/data/articles";
-import { designBrandList } from "@/data/designs";
 import { builds } from "@/data/builds";
 import { experiences } from "@/data/experience";
 import { projects } from "@/data/projects";
@@ -179,24 +179,6 @@ export default function HomePage() {
               </div>
             </Link>
           ))}
-        </div>
-      </section>
-
-      <section className="wrap section" id="designs" aria-labelledby="designs-title">
-        <div className="section-head" data-reveal>
-          <h2 className="section-title display" id="designs-title">Designs</h2>
-          <p className="section-note">Brand identities as full case studies: mark, colour, type and the packaging, signage and print they live on. <Link href="/designs">All {designBrandList.length} brands</Link>.</p>
-        </div>
-        <div className="design-strip" data-reveal>
-          {designBrandList.slice(0, 6).map((b) => {
-            const hero = b.pieces[0];
-            return (
-              <Link key={b.key} href={`/designs/${b.key}`} className="lit" aria-label={`${b.name} identity`}>
-                <Image src={`/designs/${b.key}/${hero.slug}-thumb.webp`} alt={`${b.name}: ${hero.title}`} width={720} height={Math.round((720 * hero.height) / hero.width)} sizes="(max-width: 640px) 50vw, 33vw" />
-                <span className="strip-name">{b.name}</span>
-              </Link>
-            );
-          })}
         </div>
       </section>
 

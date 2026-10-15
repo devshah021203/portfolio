@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { EMAIL } from "@/components/CopyEmail";
+import { EMAIL } from "@/lib/contact";
 import { samples } from "@/data/samples";
 import { siteUrl } from "@/lib/seo";
 

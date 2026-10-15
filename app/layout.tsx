@@ -5,7 +5,7 @@ import HeaderScroll from "@/components/HeaderScroll";
 import Lighting from "@/components/Lighting";
 import Reveal from "@/components/Reveal";
 import WindsorClock from "@/components/WindsorClock";
-import { EMAIL } from "@/components/CopyEmail";
+import { EMAIL } from "@/lib/contact";
 import { baseMetadata, personJsonLd } from "@/lib/seo";
 import "./globals.css";
 
@@ -29,7 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <nav className="nav" aria-label="Site">
             <Link href="/#work">Work</Link>
             <Link href="/samples">Samples</Link>
-            <Link href="/designs">Designs</Link>
+            <Link href="/#builds">Builds</Link>
             <Link href="/insights">Insights</Link>
             <Link href="/#contact">Contact</Link>
           </nav>
@@ -42,7 +42,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <footer className="wrap site-footer mono">
           <span>© {new Date().getFullYear()} Dev Shah · Windsor, Ontario</span>
           <nav aria-label="Footer">
-            <Link href="/designs">Designs</Link>
             <Link href="/samples">Samples</Link>
             <Link href="/insights">Insights</Link>
             <a href="https://voyagea.travel">Voyagea</a>
