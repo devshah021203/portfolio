@@ -11,6 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${siteUrl}/`, lastModified: now, changeFrequency: "weekly", priority: 1 },
     { url: `${siteUrl}/designs`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
     ...brandOrder.map((k) => ({ url: `${siteUrl}/designs/${k}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.7 })),
+    { url: `${siteUrl}/samples`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
     { url: `${siteUrl}/insights`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
     ...projects.map((p) => ({ url: `${siteUrl}/work/${p.slug}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.8 })),
     ...builds.map((b) => ({ url: `${siteUrl}/work/${b.slug}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.8 })),

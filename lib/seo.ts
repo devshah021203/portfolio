@@ -8,7 +8,7 @@ export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://shah-dev.com
 export const personName = "Dev Shah";
 export const defaultTitle = "Dev Shah — Founder, Developer & Designer in Windsor, Ontario";
 export const defaultDescription =
-  "Dev Shah builds products, brands and small ventures from Windsor, Ontario: founder of Voyagea and Keri in Windsor, Business Development Officer at PTRI Innovation, and the developer behind BeamFall and Dwello.";
+  "Dev Shah builds products, brands and small ventures from Windsor, Ontario: founder of Voyagea, Keri in Windsor and The Saturday Table, and the developer behind ChargeBuddy, Ptrionix, BeamFall and Dwello. Websites for local businesses, with a working sample first.";
 
 export const baseMetadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -27,6 +27,10 @@ export const baseMetadata: Metadata = {
     "PTRI Innovation Business Development Officer",
     "BeamFall developer",
     "Dwello desk robot",
+    "ChargeBuddy EV charger app",
+    "Ptrionix construction ERP",
+    "The Saturday Table Windsor",
+    "website redesign sample",
     "Windsor entrepreneur",
     "small business website Windsor",
     "local SEO Windsor",
@@ -67,5 +71,5 @@ export const personJsonLd = {
     { "@type": "Organization", name: "PTRI Innovation", url: "https://www.ptriinnovation.com" },
     { "@type": "Organization", name: "Keri in Windsor", url: "https://keriinwindsor.ca" },
   ],
-  knowsAbout: ["Web design", "Product design", "Next.js", "Local SEO", "Brand systems", "iOS apps"],
+  knowsAbout: ["Web design", "Product design", "Next.js", "Local SEO", "Brand systems", "iOS apps", "Android apps", "SaaS"],
 };

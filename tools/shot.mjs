@@ -23,7 +23,8 @@ const chrome = spawn(CHROME, [
 ], { stdio: ['ignore', 'ignore', 'pipe'] });
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 let ws, id = 0; const pending = new Map();
-const send = (method, params = {}) => new Promise((res, rej) => { const i = ++id; pending.set(i, { res, rej }); ws.send(JSON.stringify({ id: i, method, params })); });
+const send = (method, params = {}) => new Promise((res, rej) => { const i = ++id; pending.set(i, { res, rej }); ws.send(JSON.stringify({ id: i, method, params })); setTimeout(() => rej(new Error('timeout ' + method)), 45000); });
+setTimeout(() => { console.log('shot.mjs: gave up after 90 s'); chrome.kill(); process.exit(1); }, 90000).unref();
 try {
   let targets;
   for (let i = 0; i < 40; i++) { try { targets = await (await fetch(`http://127.0.0.1:${port}/json`)).json(); break; } catch { await sleep(250); } }

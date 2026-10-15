@@ -8,11 +8,16 @@ import { designBrandList } from "@/data/designs";
 import { builds } from "@/data/builds";
 import { experiences } from "@/data/experience";
 import { projects } from "@/data/projects";
+import { samples } from "@/data/samples";
 
-// Display order and grid span: two rows of 7 + 5, then one cinematic 12.
+// Display order and grid span: four rows alternating 7 + 5 / 5 + 7, then one cinematic 12.
 const layout: [string, "7" | "5" | "12"][] = [
   ["voyagea", "7"],
-  ["keri-in-windsor", "5"],
+  ["chargebuddy", "5"],
+  ["ptrionix", "5"],
+  ["ptri-innovation", "7"],
+  ["keri-in-windsor", "7"],
+  ["saturday-table", "5"],
   ["trik-studio", "5"],
   ["ak-builds-plumbing", "7"],
   ["skyvage", "12"],
@@ -26,19 +31,19 @@ const now = [
     label: "Founder & developer",
     name: "Voyagea",
     href: "https://voyagea.travel",
-    text: "A free AI travel planner. Day-by-day itineraries with maps, budgets and local tips.",
+    text: "An AI travel app for iPhone and Android. Day-by-day trips with maps, costs and local tips, offline too.",
   },
   {
-    label: "Founder",
-    name: "Keri in Windsor",
-    href: "https://keriinwindsor.ca",
-    text: "Premium Indian mangoes delivered across Windsor–Essex. In season May to July.",
+    label: "Building",
+    name: "ChargeBuddy",
+    href: "https://chargebuddy.in",
+    text: "An EV charger map for India that shows which chargers actually work, live from riders.",
   },
   {
-    label: "Business development",
-    name: "PTRI Innovation",
-    href: "https://www.ptriinnovation.com",
-    text: "Growth and partnerships for an AI-first studio building digital products.",
+    label: "Hosting",
+    name: "The Saturday Table",
+    href: "https://thesaturdaytable.ca",
+    text: "Seven seats, five industries, one conversation. A small Saturday table for builders in Windsor.",
   },
 ];
 
@@ -54,8 +59,8 @@ export default function HomePage() {
             <span className="hero-sub">builds products, brands and small ventures from Windsor, Ontario.</span>
           </h1>
           <p className="hero-lede">
-            Founder of Voyagea and Keri in Windsor. Developer behind BeamFall and Dwello. Designer of websites
-            that local businesses actually get enquiries from.
+            Founder of Voyagea, Keri in Windsor and The Saturday Table. Developer behind ChargeBuddy, Ptrionix,
+            BeamFall and Dwello. Designer of websites that local businesses actually get enquiries from.
           </p>
           <p className="actions">
             <a className="btn btn-fill" href="#work">See the work</a>
@@ -81,7 +86,7 @@ export default function HomePage() {
         <div className="section-head" data-reveal>
           <h2 className="section-title display" id="work-title">Selected work</h2>
           <p className="section-note">
-            Websites and products for businesses in Windsor, Ahmedabad and beyond. Each one is live.
+            Websites, apps and software for businesses in Windsor, India and beyond. Each one is live.
           </p>
         </div>
         <div className="work-grid">
@@ -110,6 +115,45 @@ export default function HomePage() {
                 <p className="work-summary">{p.summary}</p>
               </div>
             </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="wrap section" id="samples" aria-labelledby="samples-title">
+        <div className="section-head" data-reveal>
+          <h2 className="section-title display" id="samples-title">Sample sites</h2>
+          <p className="section-note">
+            Before a business says yes, I build them a working sample of their new site, so they see it instead of
+            imagining it. <Link href="/samples">How each one was made</Link>.
+          </p>
+        </div>
+        <div className="sample-grid">
+          {samples.map((s, i) => (
+            <a
+              key={s.slug}
+              href={s.url}
+              rel="noopener"
+              target="_blank"
+              className="sample-card"
+              data-wide={i === 0 ? "" : undefined}
+              data-reveal
+              data-delay={String(i % 2)}
+            >
+              <div className="sample-media">
+                <div className="sample-screen lit">
+                  <Image src={s.image} alt={`${s.name} sample site on a laptop`} width={1600} height={1000} sizes="(max-width: 860px) 100vw, 60vw" />
+                </div>
+                <div className="sample-phone lit">
+                  <Image src={s.phone} alt={`${s.name} sample site on a phone`} width={780} height={1688} sizes="140px" />
+                </div>
+              </div>
+              <div className="work-meta">
+                <h3 className="work-name display">{s.name}</h3>
+                <span className="work-cat mono">{s.place}</span>
+                <p className="work-summary">{s.summary}</p>
+                <span className="sample-open">Open the sample</span>
+              </div>
+            </a>
           ))}
         </div>
       </section>

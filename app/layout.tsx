@@ -28,7 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Link href="/" className="brand" aria-label="Dev Shah, home">Dev Shah</Link>
           <nav className="nav" aria-label="Site">
             <Link href="/#work">Work</Link>
-            <Link href="/#builds">Builds</Link>
+            <Link href="/samples">Samples</Link>
             <Link href="/designs">Designs</Link>
             <Link href="/insights">Insights</Link>
             <Link href="/#contact">Contact</Link>
@@ -43,8 +43,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <span>© {new Date().getFullYear()} Dev Shah · Windsor, Ontario</span>
           <nav aria-label="Footer">
             <Link href="/designs">Designs</Link>
+            <Link href="/samples">Samples</Link>
             <Link href="/insights">Insights</Link>
             <a href="https://voyagea.travel">Voyagea</a>
+            <a href="https://chargebuddy.in">ChargeBuddy</a>
             <a href="https://keriinwindsor.ca">Keri in Windsor</a>
             <a href="https://www.ptriinnovation.com">PTRI Innovation</a>
           </nav>
